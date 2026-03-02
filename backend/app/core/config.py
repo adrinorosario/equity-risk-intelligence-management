@@ -3,6 +3,7 @@
 
 from functools import lru_cache
 
+from pydantic import Field, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -13,8 +14,8 @@ class Settings(BaseSettings):
     app_env: str = "local"
     app_name: str = "erims-api"
 
-    # CORS
-    cors_origins: list[str] = ["http://localhost:5173"]
+    # CORS (raw string from env, e.g. "http://a,http://b")
+    cors_origins_raw: str | None = Field(default=None, alias="CORS_ORIGINS")
 
     # Postgres
     postgres_host: str = "localhost"
@@ -34,6 +35,13 @@ class Settings(BaseSettings):
     jwt_secret: str = "change_me_in_env"
     jwt_algorithm: str = "HS256"
     access_token_expires_minutes: int = 60
+
+    @computed_field
+    @property
+    def cors_origins(self) -> list[str]:
+        if not self.cors_origins_raw:
+            return ["http://localhost:5173"]
+        return [origin.strip() for origin in self.cors_origins_raw.split(",") if origin.strip()]
 
     @property
     def postgres_dsn(self) -> str:

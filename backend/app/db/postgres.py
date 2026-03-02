@@ -5,7 +5,12 @@ from collections.abc import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine
+
 from app.core.config import get_settings
+
+SQL_ALCHEMY_DATABASE_URL = "postgresql://user:password@localhost/dbname"
 
 
 def get_postgres_engine() -> AsyncEngine:
