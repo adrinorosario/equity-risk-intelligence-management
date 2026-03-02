@@ -1,0 +1,72 @@
+# TLDR; Python dependency + tooling manifest for the FastAPI backend and analytics engine.
+# TODO: Add/remove packages as analytics and integrations evolve; keep `poetry.lock` committed.
+
+[tool.poetry]
+name = "erims-backend"
+version = "0.1.0"
+description = "FastAPI backend + analytics engine scaffold for ERIMS."
+authors = ["ERIMS <dev@local>"]
+readme = "../README.md"
+packages = [{ include = "app" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+# Web API
+fastapi = "^0.115.0"
+uvicorn = { version = "^0.30.0", extras = ["standard"] }
+pydantic = "^2.8.0"
+pydantic-settings = "^2.4.0"
+python-dotenv = "^1.0.1"
+
+# Auth / security
+python-jose = { version = "^3.3.0", extras = ["cryptography"] }
+passlib = { version = "^1.7.4", extras = ["bcrypt"] }
+
+# Databases
+sqlalchemy = { version = "^2.0.0", extras = ["asyncio"] }
+asyncpg = "^0.29.0"
+alembic = "^1.13.0"
+
+motor = "^3.6.0"
+pymongo = "^4.8.0"
+
+# HTTP + retries
+httpx = "^0.27.0"
+tenacity = "^9.0.0"
+
+# Analytics engine (data + ML + optimization)
+numpy = "^2.0.0"
+pandas = "^2.2.0"
+scipy = "^1.13.0"
+scikit-learn = "^1.5.0"
+statsmodels = "^0.14.0"
+cvxpy = "^1.5.0"
+PyPortfolioOpt = "^1.5.5"
+yfinance = "^0.2.40"
+
+# Logging
+structlog = "^24.4.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+pytest-asyncio = "^0.23.0"
+ruff = "^0.6.0"
+black = "^24.8.0"
+mypy = "^1.11.0"
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+fix = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
