@@ -1,7 +1,6 @@
-# TLDR; Reporting endpoints (generate/export risk reports, dashboards summaries).
-# TODO: Implement reporting per SRS FR5 and support PDF/CSV exports.
+# Reporting endpoints (generate/export risk reports, dashboard summaries).
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 
 from app.api.deps import DbSession, get_current_active_user
 from app.schemas.report import ReportCreate, ReportPublic
@@ -25,3 +24,13 @@ async def create_report(
     )
     service = ReportService(db)
     return await service.create_report(enforced_payload)
+
+
+@router.get("/", response_model=list[ReportPublic])
+async def list_reports(
+    portfolio_id: int = Query(None, description="Filter reports by portfolio"),
+    db=DbSession,
+    current_user: UserPublic = Depends(get_current_active_user),
+) -> list[ReportPublic]:
+    service = ReportService(db)
+    return await service.list_reports(portfolio_id, current_user.user_id)

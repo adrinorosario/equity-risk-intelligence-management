@@ -1,10 +1,9 @@
-# TLDR; Risk assessment endpoints (compute volatility/exposure/scores at equity & portfolio level).
-# TODO: Implement risk calculations per SRS FR4 and call into `engine/risk/` modules.
+# Risk assessment endpoints (compute volatility/exposure/scores at equity & portfolio level).
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.api.deps import DbSession, get_current_active_user
-from app.schemas.risk import RiskAssessmentCreate, RiskAssessmentPublic
+from app.schemas.risk import RiskAssessmentCreate, RiskAssessmentPublic, RiskMetricPublic
 from app.schemas.user import UserPublic
 from app.services.risk_service import RiskService
 
@@ -32,3 +31,22 @@ async def assess_equity_risk(
         return await service.assess_equity_risk(enforced_payload)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+
+
+@router.get("/assessments", response_model=list[RiskAssessmentPublic])
+async def list_assessments(
+    portfolio_id: int = Query(..., description="Portfolio ID to list assessments for"),
+    db=DbSession,
+    current_user: UserPublic = Depends(get_current_active_user),
+) -> list[RiskAssessmentPublic]:
+    service = RiskService(db)
+    return await service.list_assessments_for_portfolio(portfolio_id, current_user.user_id)
+
+
+@router.get("/metrics", response_model=list[RiskMetricPublic])
+async def list_metrics(
+    db=DbSession,
+    current_user: UserPublic = Depends(get_current_active_user),
+) -> list[RiskMetricPublic]:
+    service = RiskService(db)
+    return await service.list_metrics()

@@ -1,5 +1,4 @@
-# TLDR; Portfolio schemas for creating and displaying portfolios.
-# TODO: Add computed fields (risk level, totals) and ownership constraints.
+# Portfolio schemas for creating and displaying portfolios.
 
 from datetime import date
 from pydantic import BaseModel, Field
@@ -11,7 +10,7 @@ class PortfolioBase(BaseModel):
 
 
 class PortfolioCreate(PortfolioBase):
-    user_id: int
+    user_id: int = 0  # Default to 0, server overrides with auth'd user
 
 
 class PortfolioUpdate(BaseModel):

@@ -1,5 +1,4 @@
-# TLDR; Risk metric + assessment schemas aligned with SRS FR4 tables.
-# TODO: Add metric catalogs, scoring normalization, and audit trail fields.
+# Risk metric + assessment schemas aligned with SRS FR4 tables.
 
 from datetime import date
 from pydantic import BaseModel, Field

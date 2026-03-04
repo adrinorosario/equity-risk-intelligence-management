@@ -1,7 +1,7 @@
-# TLDR; Reporting schemas for risk evaluations and exports.
-# TODO: Add report templates, export formats, and dashboard summary models.
+# Reporting schemas for risk evaluations and exports.
 
 from datetime import date
+from typing import Any
 from pydantic import BaseModel, Field
 
 
@@ -14,3 +14,4 @@ class ReportCreate(BaseModel):
 class ReportPublic(ReportCreate):
     report_id: int
     created_at: date | None = None
+    summary: dict[str, Any] | None = None

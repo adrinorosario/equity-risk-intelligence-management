@@ -1,22 +1,22 @@
 /**
- * TLDR; Auth state store scaffold (token/user/session).
- * TODO: Implement login/logout, token storage, and user profile loading.
+ * Auth state store (token/user/session management).
  */
 
 import { create } from "zustand";
 import { httpClient } from "../api/httpClient";
 import { endpoints } from "../api/endpoints";
 
-export const useAuthStore = create((set) => ({
-  accessToken: window.localStorage.getItem("accessToken"),
+export const useAuthStore = create((set, get) => ({
+  accessToken: globalThis.localStorage.getItem("accessToken"),
   currentUser: null,
+  loading: false,
 
   login: async (email, password) => {
     const response = await httpClient.post(endpoints.auth.login, { email, password });
     const { access_token: token } = response.data;
-    window.localStorage.setItem("accessToken", token);
+    globalThis.localStorage.setItem("accessToken", token);
     set({ accessToken: token });
-    await useAuthStore.getState().loadCurrentUser();
+    await get().loadCurrentUser();
   },
 
   register: async (payload) => {
@@ -24,13 +24,18 @@ export const useAuthStore = create((set) => ({
   },
 
   loadCurrentUser: async () => {
-    const { data } = await httpClient.get(`${endpoints.users}/me`);
-    set({ currentUser: data });
+    try {
+      set({ loading: true });
+      const { data } = await httpClient.get(endpoints.users.me);
+      set({ currentUser: data, loading: false });
+    } catch (err) {
+      set({ loading: false });
+      throw new Error("Failed to load user");
+    }
   },
 
   logout: () => {
-    window.localStorage.removeItem("accessToken");
+    globalThis.localStorage.removeItem("accessToken");
     set({ accessToken: null, currentUser: null });
-  }
+  },
 }));
-
