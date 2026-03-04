@@ -1,0 +1,21 @@
+# TLDR; Pings the Render backend every 10 minutes to prevent free-tier cold starts.
+# Set RENDER_BACKEND_URL in GitHub repo Settings → Secrets and variables → Actions.
+
+name: Keep Backend Alive
+
+on:
+  schedule:
+    - cron: "*/10 * * * *" # every 10 minutes
+  workflow_dispatch: # allow manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health endpoint
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.RENDER_BACKEND_URL }}/health)
+          echo "Health check status: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "Warning: backend responded with HTTP $STATUS"
+          fi
