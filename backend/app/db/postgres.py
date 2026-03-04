@@ -3,23 +3,38 @@
 
 from collections.abc import AsyncGenerator
 
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
-
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from app.core.config import get_settings
-
-SQL_ALCHEMY_DATABASE_URL = "postgresql://user:password@localhost/dbname"
 
 
 def get_postgres_engine() -> AsyncEngine:
     settings = get_settings()
-    return create_async_engine(settings.postgres_dsn, pool_pre_ping=True)
+    return create_async_engine(settings.postgres_dsn, pool_pre_ping=True, future=True)
+
+
+_engine: AsyncEngine | None = None
+_session_factory: async_sessionmaker[AsyncSession] | None = None
 
 
 async def get_postgres_session() -> AsyncGenerator[AsyncSession, None]:
-    engine = get_postgres_engine()
-    session_factory = async_sessionmaker(engine, expire_on_commit=False)
-    async with session_factory() as session:
+    """FastAPI dependency that yields an AsyncSession backed by a shared engine."""
+    global _engine, _session_factory
+
+    if _engine is None:
+        _engine = get_postgres_engine()
+
+    if _session_factory is None:
+        _session_factory = async_sessionmaker(
+            _engine,
+            expire_on_commit=False,
+            autoflush=False,
+        )
+
+    async with _session_factory() as session:
         yield session
