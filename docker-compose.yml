@@ -1,0 +1,59 @@
+# TLDR; Local dev databases for ERIMS (Postgres + Mongo + admin UIs).
+# TODO: Wire backend to these services using env vars in `.env`.
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: erims-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-erims}
+      POSTGRES_USER: ${POSTGRES_USER:-erims}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-erims_password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - erims_postgres_data:/var/lib/postgresql/data
+      - ./backend/infra/postgres/init:/docker-entrypoint-initdb.d
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: erims-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@local.dev
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+  mongo:
+    image: mongo:7
+    container_name: erims-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE:-erims}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-erims}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-erims_password}
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    volumes:
+      - erims_mongo_data:/data/db
+
+  mongo_express:
+    image: mongo-express:1
+    container_name: erims-mongo-express
+    restart: unless-stopped
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME:-erims}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-erims_password}
+      ME_CONFIG_MONGODB_SERVER: mongo
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+
+volumes:
+  erims_postgres_data:
+  erims_mongo_data:

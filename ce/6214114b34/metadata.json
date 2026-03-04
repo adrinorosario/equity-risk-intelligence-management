@@ -1,0 +1,65 @@
+{
+  "cli_version": "0.4.8",
+  "checkpoint_id": "ce6214114b34",
+  "strategy": "manual-commit",
+  "branch": "analytics_engine",
+  "checkpoints_count": 8,
+  "files_touched": [
+    "backend/app/api/deps.py",
+    "backend/app/api/v1/endpoints/auth.py",
+    "backend/app/api/v1/endpoints/equities.py",
+    "backend/app/api/v1/endpoints/portfolios.py",
+    "backend/app/api/v1/endpoints/reports.py",
+    "backend/app/api/v1/endpoints/risk.py",
+    "backend/app/api/v1/endpoints/users.py",
+    "backend/app/core/security.py",
+    "backend/app/db/models/__init__.py",
+    "backend/app/db/models/base.py",
+    "backend/app/db/models/equity.py",
+    "backend/app/db/models/portfolio.py",
+    "backend/app/db/models/risk.py",
+    "backend/app/db/models/user.py",
+    "backend/app/db/postgres.py",
+    "backend/app/engine/__init__.py",
+    "backend/app/engine/data/market_data.py",
+    "backend/app/engine/data/portfolio_data.py",
+    "backend/app/engine/forecasting/volatility.py",
+    "backend/app/engine/optimization/optimizer.py",
+    "backend/app/engine/pipelines/__init__.py",
+    "backend/app/engine/risk/metrics.py",
+    "backend/app/services/auth_service.py",
+    "backend/app/services/portfolio_service.py",
+    "backend/app/services/report_service.py",
+    "backend/app/services/risk_service.py",
+    "backend/tests/test_placeholder.py",
+    "engine_specs.md",
+    "frontend/src/api/httpClient.js",
+    "frontend/src/features/auth/LoginPage.jsx",
+    "frontend/src/features/auth/RegisterPage.jsx",
+    "frontend/src/features/portfolio/PortfolioListPage.jsx",
+    "frontend/src/store/authStore.js"
+  ],
+  "sessions": [
+    {
+      "metadata": "/ce/6214114b34/0/metadata.json",
+      "transcript": "/ce/6214114b34/0/full.jsonl",
+      "context": "/ce/6214114b34/0/context.md",
+      "content_hash": "/ce/6214114b34/0/content_hash.txt",
+      "prompt": "/ce/6214114b34/0/prompt.txt"
+    },
+    {
+      "metadata": "/ce/6214114b34/1/metadata.json",
+      "transcript": "/ce/6214114b34/1/full.jsonl",
+      "context": "/ce/6214114b34/1/context.md",
+      "content_hash": "/ce/6214114b34/1/content_hash.txt",
+      "prompt": "/ce/6214114b34/1/prompt.txt"
+    },
+    {
+      "metadata": "/ce/6214114b34/2/metadata.json",
+      "transcript": "/ce/6214114b34/2/full.jsonl",
+      "context": "",
+      "content_hash": "/ce/6214114b34/2/content_hash.txt",
+      "prompt": ""
+    }
+  ]
+}
