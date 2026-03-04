@@ -10,3 +10,12 @@ export const httpClient = axios.create({
   timeout: 30_000
 });
 
+httpClient.interceptors.request.use((config) => {
+  const token = window.localStorage.getItem("accessToken");
+  if (token) {
+    // eslint-disable-next-line no-param-reassign
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
